@@ -1,3 +1,11 @@
+@import "tailwindcss";
+
+@property --header-height {
+  syntax: '<length>';
+  initial-value: 64px;
+  inherits: false;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -8,3 +16,4 @@
 .card {
   padding: 2em;
 }
+

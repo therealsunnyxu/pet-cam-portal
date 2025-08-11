@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router'
 import './App.css'
 import AccountView from './components/views/AccountView'
+import DashboardView from './components/views/DashboardView'
 import IndexView from './components/views/IndexView'
 import LoginView from './components/views/LoginView'
 
@@ -17,7 +18,7 @@ function App() {
         <Route path="done" element={<div />} />
       </Route>
       <Route path="dashboard">
-        <Route index element={<div />} />
+        <Route index element={<DashboardView />} />
         <Route path="account">
           <Route index element={<AccountView />} />
         </Route>

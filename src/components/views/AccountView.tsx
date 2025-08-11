@@ -70,6 +70,7 @@ function AccountView() {
         navigate("/");
     }
 
+    // TODO: make the forms dropdown style
     return (
         <main>
             <DashboardHeader />

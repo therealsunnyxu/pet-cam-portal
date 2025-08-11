@@ -26,7 +26,14 @@ function LoginView() {
 
         autoLogin();
     }, []);
-    return (<LoginForm />);
+    return (
+        <main>
+            <section>
+                <h2 className="text-xl">Log In</h2>
+                <LoginForm />
+            </section>
+        </main>
+    );
 }
 
 export default LoginView;

@@ -1,13 +1,33 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import SITE_URL from "../../site";
 import { CSRFHeaders } from "./CSRFHeaders";
-import FieldErrors from "./FieldErrors/FieldErrors";
+import FieldErrors from "./FieldErrors";
 
-function ChangeEmailForm() {
+function ChangePasswordForm(props: {
+    onUnsavedChanges?: (hasUnsavedData: boolean) => void
+}) {
     const [errorMsg, setErrorMsg] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
     const [newPassword1Errored, setNewPassword1Errored] = useState(false);
     const [newPassword2Errored, setNewPassword2Errored] = useState(false);
+
+    // Track the values of the fields
+    const [newPassword1, setNewPassword1] = useState("");
+    const [newPassword2, setNewPassword2] = useState("");
+
+    // Track last unsaved state to avoid duplicate calls
+    const lastUnsavedState = useRef<boolean | null>(null);
+
+    // Effect to call onUnsavedChanges when the total length changes from 0 <-> >0
+    useEffect(() => {
+        if (typeof props.onUnsavedChanges !== "function") return;
+        const totalLength = newPassword1.length + newPassword2.length;
+        const hasUnsaved = totalLength > 0;
+        if (lastUnsavedState.current !== hasUnsaved) {
+            props.onUnsavedChanges(hasUnsaved);
+            lastUnsavedState.current = hasUnsaved;
+        }
+    }, [newPassword1, newPassword2, props]);
 
     async function handleSubmit(event: FormEvent) {
         if (!event || typeof event.preventDefault !== "function" || !("target" in event)) {
@@ -78,6 +98,8 @@ function ChangeEmailForm() {
             setNewPassword1Errored(false);
             setNewPassword2Errored(false);
             setSuccessMsg("Successfully changed password");
+            setNewPassword1("");
+            setNewPassword2("");
             return;
         }
 
@@ -121,11 +143,27 @@ function ChangeEmailForm() {
         <form method="POST" onSubmit={handleSubmit} aria-label="Change password">
             <fieldset>
                 <label htmlFor="new_password1">Old Password</label>
-                <input type="password" id="new_password1" name="new_password1" aria-label="Old password" />
+                <input
+                    type="password"
+                    id="new_password1"
+                    name="new_password1"
+                    aria-label="Old password"
+                    value={newPassword1}
+                    onChange={e => setNewPassword1(e.target.value)}
+                    className={`border-1 rounded-md ${newPassword1Errored ? "border-red-600!" : ""}`}
+                />
             </fieldset>
             <fieldset>
                 <label htmlFor="new_password2">New Password</label>
-                <input type="password" id="new_password2" name="new_password2" aria-label="New password" />
+                <input
+                    type="password"
+                    id="new_password2"
+                    name="new_password2"
+                    aria-label="New password"
+                    value={newPassword2}
+                    onChange={e => setNewPassword2(e.target.value)}
+                    className={`border-1 rounded-md ${newPassword2Errored ? "border-red-600!" : ""}`}
+                />
             </fieldset>
             <button aria-label="Submit password change">Submit</button>
             <FieldErrors errors={errorMsg} />
@@ -136,4 +174,4 @@ function ChangeEmailForm() {
     );
 }
 
-export default ChangeEmailForm;
+export default ChangePasswordForm;

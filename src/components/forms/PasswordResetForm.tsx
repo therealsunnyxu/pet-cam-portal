@@ -2,7 +2,7 @@ import { type FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 import SITE_URL from "../../site";
 import { CSRFHeaders } from "./CSRFHeaders";
-import FieldErrors from "./FieldErrors/FieldErrors";
+import FieldErrors from "./FieldErrors";
 
 function PasswordResetForm() {
     const [errorMsg, setErrorMsg] = useState("");
@@ -44,7 +44,7 @@ function PasswordResetForm() {
             return;
         }
         if (res.status == 429) {
-            setErrorMsg("Sorry, server is overloaded. Please try again in 5 minutes.");
+            setErrorMsg("Sorry, server is overloadWed. Please try again in 5 minutes.");
             return;
         }
         setErrorMsg("Invalid email format");

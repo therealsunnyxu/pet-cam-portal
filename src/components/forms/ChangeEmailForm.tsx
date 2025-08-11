@@ -1,13 +1,33 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import SITE_URL from "../../site";
 import { CSRFHeaders } from "./CSRFHeaders";
-import FieldErrors from "./FieldErrors/FieldErrors";
+import FieldErrors from "./FieldErrors";
 
-function ChangeEmailForm() {
+function ChangeEmailForm(props: {
+    onUnsavedChanges?: (hasUnsavedData: boolean) => void
+}) {
     const [errorMsg, setErrorMsg] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
     const [oldEmailErrored, setOldEmailErrored] = useState(false);
     const [newEmailErrored, setNewEmailErrored] = useState(false);
+
+    // Track the values of the fields
+    const [oldEmail, setOldEmail] = useState("");
+    const [newEmail, setNewEmail] = useState("");
+
+    // Track last unsaved state to avoid duplicate calls
+    const lastUnsavedState = useRef<boolean | null>(null);
+
+    // Effect to call onUnsavedChanges when the total length changes from 0 <-> >0
+    useEffect(() => {
+        if (typeof props.onUnsavedChanges !== "function") return;
+        const totalLength = oldEmail.length + newEmail.length;
+        const hasUnsaved = totalLength > 0;
+        if (lastUnsavedState.current !== hasUnsaved) {
+            props.onUnsavedChanges(hasUnsaved);
+            lastUnsavedState.current = hasUnsaved;
+        }
+    }, [oldEmail, newEmail, props]);
 
     async function handleSubmit(event: FormEvent) {
         if (!event || typeof event.preventDefault !== "function" || !("target" in event)) {
@@ -78,6 +98,8 @@ function ChangeEmailForm() {
             setOldEmailErrored(false);
             setNewEmailErrored(false);
             setSuccessMsg("Successfully changed email");
+            setOldEmail("");
+            setNewEmail("");
             return;
         }
 
@@ -121,11 +143,27 @@ function ChangeEmailForm() {
         <form method="POST" onSubmit={handleSubmit} aria-label="Change email">
             <fieldset>
                 <label htmlFor="old_email">Old Email</label>
-                <input type="email" id="old_email" name="old_email" aria-label="Old email" />
+                <input
+                    type="email"
+                    id="old_email"
+                    name="old_email"
+                    aria-label="Old email"
+                    value={oldEmail}
+                    onChange={e => setOldEmail(e.target.value)}
+                    className={`border-1 rounded-md ${oldEmailErrored ? "border-red-600!" : ""}`}
+                />
             </fieldset>
             <fieldset>
                 <label htmlFor="new_email">New Email</label>
-                <input type="email" id="new_email" name="new_email" aria-label="New email" />
+                <input
+                    type="email"
+                    id="new_email"
+                    name="new_email"
+                    aria-label="New email"
+                    value={newEmail}
+                    onChange={e => setNewEmail(e.target.value)}
+                    className={`border-1 rounded-md ${newEmailErrored ? "border-red-600!" : ""}`}
+                />
             </fieldset>
             <button aria-label="Submit email change">Submit</button>
             <FieldErrors errors={errorMsg} />

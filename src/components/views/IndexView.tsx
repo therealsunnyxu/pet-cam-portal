@@ -8,7 +8,7 @@ function IndexView() {
     useEffect(() => {
         async function checkLogin() {
             try {
-                let isLoggedInRes = await fetch(`${SITE_URL}/auth/check`, {
+                let isLoggedInRes = await fetch(`${SITE_URL}/api/auth/check`, {
                     method: 'POST',
                     credentials: "include",
                     headers: new CSRFHeaders()

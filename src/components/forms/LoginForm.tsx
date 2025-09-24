@@ -51,7 +51,7 @@ function LoginForm() {
             return;
         }
 
-        let res = await fetch(`${SITE_URL}/auth/login`, {
+        let res = await fetch(`${SITE_URL}/api/auth/login`, {
             method: 'POST',
             body: formData,
             credentials: "include",

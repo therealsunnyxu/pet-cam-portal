@@ -3,13 +3,14 @@ import SITE_URL from "../../site";
 import { CSRFHeaders } from "../forms/CSRFHeaders";
 
 function LogoutButton(props: {
-    logoutHandler?: (...args: any[]) => any
+    logoutHandler?: (...args: any[]) => any,
+    className?: string
 }) {
     const navigate = useNavigate();
 
     async function defaultLogoutHandler() {
         try {
-            await fetch(`${SITE_URL}/auth/logout`, {
+            await fetch(`${SITE_URL}/api/auth/logout`, {
                 method: 'POST',
                 credentials: "include",
                 headers: new CSRFHeaders()
@@ -21,7 +22,7 @@ function LogoutButton(props: {
     }
 
     return (<button onClick={typeof props.logoutHandler === "function" ? props.logoutHandler : defaultLogoutHandler}
-        className="bg-red-700! hover:border-white!"
+        className={`bg-red-700! hover:border-white! ${props.className}`}
         aria-label="Log out">Log Out</button>);
 }
 

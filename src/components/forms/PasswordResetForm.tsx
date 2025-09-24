@@ -26,7 +26,7 @@ function PasswordResetForm() {
             setErrorMsg("Invalid email format");
             return;
         }
-        let res = await fetch(`${SITE_URL}/auth/password/reset`, {
+        let res = await fetch(`${SITE_URL}/api/auth/password/reset`, {
             method: 'POST',
             body: formData,
             credentials: "include",

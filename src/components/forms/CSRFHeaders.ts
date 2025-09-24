@@ -4,7 +4,8 @@ const CSRF_TOKEN_NAME = "csrftoken";
 const CSRF_TOKEN_HEADER = "X-CSRFToken";
 
 function getCSRFToken(): string {
-    return Cookies.get(CSRF_TOKEN_NAME) ?? "";
+    const csrfToken = Cookies.get(CSRF_TOKEN_NAME);
+    return csrfToken ?? "";
 }
 
 class CSRFHeaders extends Headers {

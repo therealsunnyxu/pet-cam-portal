@@ -37,12 +37,17 @@ function ChangeEmailForm(props: {
         event.preventDefault();
 
         // Check if the user is logged in
-        let isLoggedInRes = await fetch(`${SITE_URL}/auth/check`, {
-            method: 'POST',
-            credentials: "include",
-            headers: new CSRFHeaders()
-        });
-        if (isLoggedInRes.status >= 300) {
+        try {
+            let isLoggedInRes = await fetch(`${SITE_URL}/api/auth/check`, {
+                method: 'POST',
+                credentials: "include",
+                headers: new CSRFHeaders()
+            });
+            if (isLoggedInRes.status >= 300) {
+                setErrorMsg("Not logged in")
+                return;
+            }
+        } catch {
             setErrorMsg("Not logged in")
             return;
         }
@@ -85,7 +90,7 @@ function ChangeEmailForm(props: {
             return;
         }
 
-        let res = await fetch(`${SITE_URL}/auth/user/email`, {
+        let res = await fetch(`${SITE_URL}/api/auth/user/email`, {
             method: 'POST',
             body: formData,
             credentials: "include",

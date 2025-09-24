@@ -1,3 +1,3 @@
-const SITE_URL = "http://localhost:8000";
+const SITE_URL = "https://localhost";
 
 export default SITE_URL;

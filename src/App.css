@@ -17,3 +17,14 @@
   padding: 2em;
 }
 
+.video-js {
+  height: 100% !important;
+  width: calc(100vw - 4rem) !important;
+  max-width: calc((100vh - 91px - 146px - 1rem) * 16 / 9) !important;
+}
+
+.video-js .vjs-big-play-button {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+}

@@ -1,12 +1,12 @@
-import { type PropsWithChildren, useEffect, useRef } from "react";
-import LogoutButton from "../buttons/LogoutButton";
+import { useEffect, useRef, type PropsWithChildren, type ReactElement } from "react";
 
-interface LogoutUnsavedChangesModalProps {
-    onClosed?: (...args: any[]) => any
+interface UnsavedChangesModalProps {
+    onClosed?: (...args: any[]) => any;
+    goAheadButton: ReactElement;
 }
 
-function LogoutUnsavedChangesModal(props: PropsWithChildren<LogoutUnsavedChangesModalProps>) {
-    const { onClosed, children } = props;
+function UnsavedChangesModal(props: PropsWithChildren<UnsavedChangesModalProps>) {
+    const { onClosed, children, goAheadButton } = props;
     const dialogRef = useRef<HTMLDialogElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
 
@@ -45,12 +45,12 @@ function LogoutUnsavedChangesModal(props: PropsWithChildren<LogoutUnsavedChanges
             >
                 {children}
                 <div className="flex gap-4">
-                    <button type="button" onClick={handleGoBack}>Go back</button>
-                    <LogoutButton />
+                    <button type="button" onClick={handleGoBack} className="bg-blue-800!">Go back</button>
+                    {goAheadButton}
                 </div>
             </div>
         </dialog>
     );
 }
 
-export default LogoutUnsavedChangesModal
+export default UnsavedChangesModal

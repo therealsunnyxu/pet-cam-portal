@@ -90,12 +90,19 @@ function ChangeEmailForm(props: {
             return;
         }
 
-        let res = await fetch(`${SITE_URL}/api/auth/user/email`, {
-            method: 'POST',
-            body: formData,
-            credentials: "include",
-            headers: new CSRFHeaders()
-        });
+        let res: Response;
+
+        try {
+            res = await fetch(`${SITE_URL}/api/auth/user/email`, {
+                method: 'POST',
+                body: formData,
+                credentials: "include",
+                headers: new CSRFHeaders()
+            });
+        } catch {
+            setErrorMsg("Authentication server is down. Please try again in 5 minutes.");
+            return;
+        }
 
         if (res.status < 400) {
             // success

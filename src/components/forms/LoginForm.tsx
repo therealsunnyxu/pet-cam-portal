@@ -51,12 +51,20 @@ function LoginForm() {
             return;
         }
 
-        let res = await fetch(`${SITE_URL}/api/auth/login`, {
-            method: 'POST',
-            body: formData,
-            credentials: "include",
-            headers: new CSRFHeaders()
-        });
+        let res: Response;
+
+        try {
+            res = await fetch(`${SITE_URL}/api/auth/login`, {
+                method: 'POST',
+                body: formData,
+                credentials: "include",
+                headers: new CSRFHeaders()
+            });
+        } catch {
+            setErrorMsg("Authentication server is down. Please try again in 5 minutes.");
+            setMsg("");
+            return;
+        }
 
         if (res.status < 400) {
             // success

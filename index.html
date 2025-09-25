@@ -1,13 +1,110 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Cam</title>
+  <style>
+    /* Directly copied from Vite index.css defaults */
+    :root {
+      font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
+
+      color-scheme: light dark;
+      color: rgba(255, 255, 255, 0.87);
+      background-color: #242424;
+
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color: #213547;
+        background-color: #ffffff;
+      }
+    }
+
+    #ellipsis {
+      width: 1.5em;
+    }
+
+    /* CSS animation for dynamic ellipsis */
+    #ellipsis::after {
+      content: '';
+      display: inline-block;
+      width: 1.5em;
+      text-align: left;
+      animation: ellipsis-steps 1.2s steps(4, end) infinite;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+
+    @keyframes ellipsis-steps {
+      0% {
+        content: '';
+      }
+
+      25% {
+        content: '.';
+      }
+
+      50% {
+        content: '..';
+      }
+
+      75% {
+        content: '...';
+      }
+
+      100% {
+        content: '';
+      }
+    }
+
+    #loading-h2 {
+      margin-left: 1.5em;
+      margin-right: 0;
+    }
+
+
+
+    /* Fallback for browsers that don't support animating content property */
+    @supports not (content: "...") {
+      .ellipsis::after {
+        content: '...';
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loading">
+    <div>
+      <h1>Pet Cam</h1>
+      <p>by therealsunnyxu</p>
+    </div>
+    </br>
+    <h2 id="loading-h2">Loading<span id="ellipsis"></span></h2>
+  </div>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

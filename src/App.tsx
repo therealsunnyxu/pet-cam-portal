@@ -5,6 +5,8 @@ import AccountView from './components/views/AccountView'
 import DashboardView from './components/views/DashboardView'
 import IndexView from './components/views/IndexView'
 import LoginView from './components/views/LoginView'
+import PasswordResetConfirmView from './components/views/password-reset/PasswordResetConfirmView'
+import PasswordResetRequestView from './components/views/password-reset/PasswordResetRequestView'
 import SITE_URL from './site'
 
 function App() {
@@ -22,11 +24,8 @@ function App() {
       <Route index element={<IndexView />} />
       <Route path="login" element={<LoginView />} />
       <Route path="reset-password">
-        <Route index element={<div />} />
-        <Route path=":uidb64/:token" element={<div />} />
-        <Route path="submitted" element={<div />} />
-        <Route path="error" element={<div />} />
-        <Route path="done" element={<div />} />
+        <Route index element={<PasswordResetRequestView />} />
+        <Route path=":uidb64/:token" element={<PasswordResetConfirmView />} />
       </Route>
       <Route path="dashboard">
         <Route index element={<DashboardView />} />

@@ -28,11 +28,14 @@ function LoginView() {
     }, []);
     return (
         <main>
+            <header className="bg-neutral-900 w-screen flex justify-center items-center">
+                <h1 className="h-12! flex items-center justify-center text-2xl! mx-4 whitespace-nowrap">Pet Cam</h1>
+            </header>
             <section>
                 <h2 className="text-xl">Log In</h2>
                 <LoginForm />
             </section>
-        </main>
+        </main >
     );
 }
 

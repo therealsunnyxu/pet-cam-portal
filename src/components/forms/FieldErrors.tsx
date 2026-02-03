@@ -74,7 +74,7 @@ function FieldErrors(props: { errors: string | Array<any> | object }) {
             aria-label="Error message"
             className="flex flex-col bg-red-800 rounded-2xl p-4"
         >
-            <h3 className="font-bold text-white">Errors:</h3>
+            <h3 className="font-bold text-white">{errorElements instanceof Array && errorElements.length === 1 ? "Error:" : "Errors:"}</h3>
             <ul className="list-disc text-left">
                 {errorElements}
             </ul>

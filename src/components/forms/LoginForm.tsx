@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from "react";
-import { useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import SITE_URL from "../../site";
 import { CSRFHeaders } from "./CSRFHeaders";
 import FieldErrors from "./FieldErrors";
@@ -101,6 +101,7 @@ function LoginForm() {
                     className={`border-1 rounded-md ${passwordErrored ? "border-red-600!" : ""}`} />
             </fieldset>
             <button aria-label="Log in to your account">Log In</button>
+            <NavLink to="/reset-password" className="font-normal!">Forgot your password?<br />Click <u>here</u> to reset it.</NavLink>
             <FieldErrors errors={errorMsg} />
             <output name="message" aria-label="Message">
                 {msg}

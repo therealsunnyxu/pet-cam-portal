@@ -1,36 +1,22 @@
-import { type FormEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router";
 import SITE_URL from "../../site";
 import { CSRFHeaders } from "./CSRFHeaders";
 import FieldErrors from "./FieldErrors";
 
-// TODO: test this
-function ChangePasswordForm(props: {
-    onUnsavedChanges?: (hasUnsavedData: boolean) => void
-}) {
+function PasswordResetConfirmForm(props: { uidb64?: string, redirectTo: string }) {
     const [errorMsg, setErrorMsg] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
-    const [oldPasswordErrored, setOldPasswordErrored] = useState(false);
     const [newPassword1Errored, setNewPassword1Errored] = useState(false);
     const [newPassword2Errored, setNewPassword2Errored] = useState(false);
-
-    // Track the values of the fields
-    const [oldPassword, setOldPassword] = useState("");
     const [newPassword1, setNewPassword1] = useState("");
     const [newPassword2, setNewPassword2] = useState("");
+    const [isSuccessful, setIsSuccessful] = useState(false);
+    const navigate = useNavigate();
+    
 
-    // Track last unsaved state to avoid duplicate calls
-    const lastUnsavedState = useRef<boolean | null>(null);
-
-    // Effect to call onUnsavedChanges when the total length changes from 0 <-> >0
     useEffect(() => {
-        if (typeof props.onUnsavedChanges !== "function") return;
-        const totalLength = oldPassword.length + newPassword1.length + newPassword2.length;
-        const hasUnsaved = totalLength > 0;
-        if (lastUnsavedState.current !== hasUnsaved) {
-            props.onUnsavedChanges(hasUnsaved);
-            lastUnsavedState.current = hasUnsaved;
-        }
-    }, [oldPassword, newPassword1, newPassword2, props]);
+    }, []);
 
     async function handleSubmit(event: FormEvent) {
         if (!event || typeof event.preventDefault !== "function" || !("target" in event)) {
@@ -39,22 +25,6 @@ function ChangePasswordForm(props: {
         }
         event.preventDefault();
 
-        // Check if the user is logged in
-        try {
-            let isLoggedInRes = await fetch(`${SITE_URL}/api/auth/check`, {
-                method: 'POST',
-                credentials: "include",
-                headers: new CSRFHeaders()
-            });
-            if (isLoggedInRes.status >= 300) {
-                setErrorMsg("Not logged in")
-                return;
-            }
-        } catch {
-            setErrorMsg("Not logged in")
-            return;
-        }
-
         // Check form validity
         if (event.target instanceof HTMLFormElement === false) {
             setErrorMsg("Invalid form object");
@@ -62,31 +32,21 @@ function ChangePasswordForm(props: {
         }
         const form: HTMLFormElement = event.target;
         const formData: FormData = new FormData(form);
-        const oldPasswordField: FormDataEntryValue | null = formData.get("old_password");
         const newPassword1Field: FormDataEntryValue | null = formData.get("new_password1");
         const newPassword2Field: FormDataEntryValue | null = formData.get("new_password2");
-        if ((oldPasswordField == null) || (newPassword1Field == null) || (newPassword2Field == null)) {
+        if ((newPassword1Field == null) || (newPassword2Field == null)) {
             setErrorMsg("Invalid form object");
             return;
         }
 
         // Check field validity
-        const oldPassword = oldPasswordField.toString().trim();
         const newPassword1 = newPassword1Field.toString().trim();
         const newPassword2 = newPassword2Field.toString().trim();
-
-        setOldPasswordErrored(oldPassword.length < 1);
         setNewPassword1Errored(newPassword1.length < 1);
         setNewPassword2Errored(newPassword2.length < 1);
 
-        if (oldPassword.length < 1 && newPassword1.length < 1 && newPassword2.length < 1) {
-            setErrorMsg("Missing all password fields");
-            return;
-        } else if (oldPassword.length < 1) {
-            setErrorMsg("Missing old password field");
-            return;
-        } else if (newPassword1.length < 1 && newPassword2.length < 1) {
-            setErrorMsg("Missing both new password fields");
+        if ((newPassword1.length < 1) && (newPassword2.length < 1)) {
+            setErrorMsg("Missing both password fields");
             return;
         } else if (newPassword1.length < 1) {
             setErrorMsg("Missing new password field");
@@ -96,25 +56,17 @@ function ChangePasswordForm(props: {
             return;
         }
 
-        if (oldPassword === newPassword1) {
-            setErrorMsg("New password cannot be the same as old password");
-            setOldPasswordErrored(false);
-            setNewPassword1Errored(true);
-            setNewPassword2Errored(false);
-            return;
-        }
-
         if (newPassword1 !== newPassword2) {
-            setErrorMsg("New passwords do not match");
+            setErrorMsg("Passwords do not match");
             setNewPassword1Errored(true);
             setNewPassword2Errored(true);
-            return;
+            return
         }
 
         let res: Response;
 
         try {
-            res = await fetch(`${SITE_URL}/api/auth/user/password`, {
+            res = await fetch(`${SITE_URL}/api/auth/password/reset/confirm/${props.uidb64}/set-password/`, {
                 method: 'POST',
                 body: formData,
                 credentials: "include",
@@ -128,17 +80,29 @@ function ChangePasswordForm(props: {
         if (res.status < 400) {
             // success
             setErrorMsg("");
-            setOldPasswordErrored(false);
             setNewPassword1Errored(false);
             setNewPassword2Errored(false);
-            setSuccessMsg("Successfully changed password");
-            setOldPassword("");
+
+            // Display success message with "Redirecting in 5..." and start countdown
+            let countdown = 5;
+            setSuccessMsg(`Successfully changed password. Redirecting in ${countdown}...`);
             setNewPassword1("");
             setNewPassword2("");
+            setIsSuccessful(true);
+            const intervalId = setInterval(() => {
+                countdown -= 1;
+                if (countdown > 0) {
+                    setSuccessMsg(`Successfully changed password. Redirecting in ${countdown}...`);
+                } else {
+                    clearInterval(intervalId);
+                    navigate(props.redirectTo);
+                }
+            }, 1000);
             return;
         }
 
         setSuccessMsg("");
+        setIsSuccessful(false);
 
         if (res.status >= 500) {
             setErrorMsg("Sorry, server is not responding. Please try again in 5 minutes.");
@@ -158,7 +122,6 @@ function ChangePasswordForm(props: {
             )
         ) {
             setErrorMsg("Invalid or missing passwords");
-            setOldPasswordErrored(true);
             setNewPassword1Errored(true);
             setNewPassword2Errored(true);
         }
@@ -171,25 +134,14 @@ function ChangePasswordForm(props: {
         // Assumed to be a JSON
         const json = await res.json();
         setErrorMsg(json);
-        setOldPasswordErrored(Object.keys(json).includes("old_password"));
         setNewPassword1Errored(Object.keys(json).includes("new_password1"));
         setNewPassword2Errored(Object.keys(json).includes("new_password2"));
     }
 
-    return (
+    return isSuccessful ? (<p>
+        {successMsg}
+    </p>) : (
         <form method="POST" onSubmit={handleSubmit} aria-label="Change password">
-            <fieldset>
-                <label htmlFor="old_password">Old Password</label>
-                <input
-                    type="password"
-                    id="old_password"
-                    name="old_password"
-                    aria-label="Old password"
-                    value={oldPassword}
-                    onChange={e => setOldPassword(e.target.value)}
-                    className={`border-1 rounded-md ${oldPasswordErrored ? "border-red-600!" : ""}`}
-                />
-            </fieldset>
             <fieldset>
                 <label htmlFor="new_password1">New Password</label>
                 <input
@@ -203,24 +155,25 @@ function ChangePasswordForm(props: {
                 />
             </fieldset>
             <fieldset>
-                <label htmlFor="new_password2">Confirm New Password</label>
+                <label htmlFor="new_password2">Confirm Password</label>
                 <input
                     type="password"
                     id="new_password2"
                     name="new_password2"
-                    aria-label="Confirm new password"
+                    aria-label="Confirm password"
                     value={newPassword2}
                     onChange={e => setNewPassword2(e.target.value)}
                     className={`border-1 rounded-md ${newPassword2Errored ? "border-red-600!" : ""}`}
                 />
             </fieldset>
-            <button aria-label="Submit password change">Submit</button>
+            <button aria-label="Submit password reset" className="bg-blue-900!">Submit</button>
             <FieldErrors errors={errorMsg} />
             <output name="success" aria-label="Success message">
                 {successMsg}
             </output>
+            <NavLink to="/login" className="button">Cancel</NavLink>
         </form>
     );
 }
 
-export default ChangePasswordForm;
+export default PasswordResetConfirmForm;

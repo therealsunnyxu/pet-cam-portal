@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import SITE_URL from "../../site";
-import { CSRFHeaders } from "../../csrf";
+import { CSRFHeaders, refreshCSRFToken } from "../../csrf";
 import FieldErrors from "./FieldErrors";
 
 function ChangeEmailForm(props: {
@@ -38,6 +38,7 @@ function ChangeEmailForm(props: {
 
         // Check if the user is logged in
         try {
+            await refreshCSRFToken();
             let isLoggedInRes = await fetch(`${SITE_URL}/api/auth/check`, {
                 method: 'POST',
                 credentials: "include",

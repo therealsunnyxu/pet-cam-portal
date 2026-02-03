@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import SITE_URL from "../../site";
-import { CSRFHeaders } from "../../csrf";
+import { CSRFHeaders, refreshCSRFToken } from "../../csrf";
 import FieldErrors from "./FieldErrors";
 
 // TODO: test this
@@ -114,6 +114,7 @@ function ChangePasswordForm(props: {
         let res: Response;
 
         try {
+            await refreshCSRFToken();
             res = await fetch(`${SITE_URL}/api/auth/user/password`, {
                 method: 'POST',
                 body: formData,

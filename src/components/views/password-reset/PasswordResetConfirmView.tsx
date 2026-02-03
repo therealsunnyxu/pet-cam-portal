@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router";
 import SITE_URL from "../../../site";
-import { CSRFHeaders } from "../../../csrf";
+import { CSRFHeaders, refreshCSRFToken } from "../../../csrf";
 import PasswordResetConfirmForm from "../../forms/PasswordResetConfirmForm";
 
 enum ParamStatus {
@@ -38,6 +38,7 @@ function PasswordResetConfirmView() {
 
             let checkValidityRes: Response;
             try {
+                await refreshCSRFToken();
                 checkValidityRes = await fetch(`${SITE_URL}/api/auth/password/reset/confirm/${uidb64}/${token}`, {
                     method: 'POST',
                     credentials: "include",

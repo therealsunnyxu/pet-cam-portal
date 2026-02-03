@@ -5,7 +5,7 @@ import SITE_URL from "../../site";
 import LogoutButton from "../buttons/LogoutButton";
 import ChangeEmailForm from "../forms/ChangeEmailForm";
 import ChangePasswordForm from "../forms/ChangePasswordForm";
-import { CSRFHeaders } from "../forms/CSRFHeaders";
+import { CSRFHeaders } from "../../csrf";
 import UnsavedChangesModal from "../modals/UnsavedChangesModal";
 import { SiteLinks } from "./SiteLinks";
 

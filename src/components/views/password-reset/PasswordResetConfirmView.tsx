@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router";
 import SITE_URL from "../../../site";
-import { CSRFHeaders } from "../../forms/CSRFHeaders";
+import { CSRFHeaders } from "../../../csrf";
 import PasswordResetConfirmForm from "../../forms/PasswordResetConfirmForm";
 
 enum ParamStatus {

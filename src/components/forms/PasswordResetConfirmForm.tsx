@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import SITE_URL from "../../site";
-import { CSRFHeaders } from "./CSRFHeaders";
+import { CSRFHeaders } from "../../csrf";
 import FieldErrors from "./FieldErrors";
 
 function PasswordResetConfirmForm(props: { uidb64?: string, redirectTo: string }) {

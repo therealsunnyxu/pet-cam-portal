@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import SITE_URL from "../../site";
-import { CSRFHeaders } from "./CSRFHeaders";
+import { CSRFHeaders } from "../../csrf";
 import FieldErrors from "./FieldErrors";
 
 function ChangeEmailForm(props: {

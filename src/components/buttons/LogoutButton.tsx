@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import SITE_URL from "../../site";
-import { CSRFHeaders } from "../forms/CSRFHeaders";
+import { CSRFHeaders } from "../../csrf";
 
 function LogoutButton(props: {
     logoutHandler?: (...args: any[]) => any,

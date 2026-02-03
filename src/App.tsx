@@ -7,15 +7,12 @@ import IndexView from './components/views/IndexView'
 import LoginView from './components/views/LoginView'
 import PasswordResetConfirmView from './components/views/password-reset/PasswordResetConfirmView'
 import PasswordResetRequestView from './components/views/password-reset/PasswordResetRequestView'
-import SITE_URL from './site'
+import { refreshCSRFToken } from './csrf'
 
 function App() {
   useEffect(function () {
     (async function () {
-      await fetch(`${SITE_URL}/api/auth/token/csrf`, {
-        method: 'GET',
-        credentials: "include"
-      })
+      refreshCSRFToken();
     })();
   }, [])
 

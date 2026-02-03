@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import SITE_URL from "../../site";
-import { CSRFHeaders } from "../forms/CSRFHeaders";
+import { CSRFHeaders } from "../../csrf";
 
 function IndexView() {
     const navigate = useNavigate();

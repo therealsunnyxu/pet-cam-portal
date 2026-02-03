@@ -1,8 +1,10 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import SITE_URL from "../../site";
-import { CSRFHeaders } from "./CSRFHeaders";
+import { CSRFHeaders, refreshCSRFToken } from "../../csrf";
 import FieldErrors from "./FieldErrors";
+import { setCSRFToken } from "../../slices/csrfTokenReducer";
+import { useDispatch } from "react-redux";
 
 function LoginForm() {
     const [errorMsg, setErrorMsg] = useState("");
@@ -10,6 +12,7 @@ function LoginForm() {
     const [usernameErrored, setUsernameErrored] = useState(false);
     const [passwordErrored, setPasswordErrored] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     async function handleSubmit(event: FormEvent) {
         setErrorMsg("");
@@ -73,6 +76,7 @@ function LoginForm() {
             setPasswordErrored(false);
             //setMsg("Successfully logged in. Redirecting...");
             navigate("/dashboard");
+            await refreshCSRFToken();
             return;
         }
 

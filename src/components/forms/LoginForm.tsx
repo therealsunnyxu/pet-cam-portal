@@ -25,7 +25,7 @@ function LoginForm() {
         }
         const formData: FormData = new FormData(event.target);
         const usernameField: FormDataEntryValue | null = formData.get("username");
-        const passwordField: FormDataEntryValue | null = formData.get("username");
+        const passwordField: FormDataEntryValue | null = formData.get("password");
         if ((usernameField == null) || (passwordField == null)) {
             setErrorMsg("Invalid form object");
             return;
